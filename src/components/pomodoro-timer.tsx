@@ -1,15 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  BarChart3,
-  EllipsisVertical,
-  Box
-} from "lucide-react"
+
 import { SettingsDialog } from "@/components/settings-dialog"
 import { StatsDialog } from "@/components/stats-dialog"
 import { TimeBoxing } from "@/components/time-boxing"
@@ -34,7 +26,8 @@ export function PomodoroTimer() {
     flowDuration: "25",
     shortBreakDuration: "5",
     longBreakDuration: "30",
-    cycleCount: "4"
+    cycleCount: "4",
+    theme: "dark"
   })
 
   // Convert settings to numbers for calculations
@@ -54,7 +47,13 @@ export function PomodoroTimer() {
           : longBreakDurationSeconds
       )
     }
-  }, [timerState, settings, status])
+  }, [
+    timerState,
+    status,
+    flowDurationSeconds,
+    shortBreakDurationSeconds,
+    longBreakDurationSeconds
+  ])
 
   useEffect(() => {
     let interval: NodeJS.Timeout

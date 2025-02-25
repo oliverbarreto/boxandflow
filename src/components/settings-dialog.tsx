@@ -81,7 +81,7 @@ export function SettingsDialog({
     settings.longBreakDuration
   )
   const [cycleCount, setCycleCount] = useState(settings.cycleCount)
-  const [theme, setTheme] = useState(settings.theme)
+  const [theme, setTheme] = useState<string>(settings.theme || "system")
   const { setTheme: setSystemTheme } = useTheme()
 
   // Update parent component when settings change

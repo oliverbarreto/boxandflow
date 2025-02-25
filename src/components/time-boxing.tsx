@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -23,34 +23,39 @@ export function TimeBoxing({ showForm, onOpenChange }: TimeBoxingProps) {
   const [isTimeSet, setIsTimeSet] = useState(false)
   const [elapsedHours, setElapsedHours] = useState(0)
 
-  const calculateProgress = () => {
+  const calculateProgress = useCallback((startTime: Date, duration: number) => {
     const now = new Date()
-    const start = new Date(now.toDateString() + " " + startTime)
-    const end = new Date(now.toDateString() + " " + endTime)
-
-    if (now >= start && now <= end) {
-      const totalDuration = end.getTime() - start.getTime()
-      const elapsed = now.getTime() - start.getTime()
-      setProgress((elapsed / totalDuration) * 100)
-      setElapsedHours(elapsed / (1000 * 60 * 60))
-    } else {
-      setProgress(0)
-      setElapsedHours(0)
-    }
-  }
+    const elapsedTime = now.getTime() - startTime.getTime()
+    const progress = Math.min((elapsedTime / (duration * 60 * 1000)) * 100, 100)
+    setProgress(progress)
+    setElapsedHours(elapsedTime / (60 * 60 * 1000))
+    return progress
+  }, [])
 
   useEffect(() => {
-    if (isTimeSet) {
-      calculateProgress()
-      const interval = setInterval(calculateProgress, 60000)
-      return () => clearInterval(interval)
-    }
-  }, [isTimeSet])
+    if (!isTimeSet) return
+
+    const now = new Date()
+    const interval = setInterval(() => {
+      const start = new Date(now.toDateString() + " " + startTime)
+      const end = new Date(now.toDateString() + " " + endTime)
+      const duration = (end.getTime() - start.getTime()) / (60 * 1000)
+      calculateProgress(start, duration)
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [calculateProgress, endTime, isTimeSet, startTime])
 
   const handleSetTime = () => {
     setIsTimeSet(true)
     onOpenChange(false)
-    calculateProgress()
+    const now = new Date()
+    calculateProgress(
+      new Date(now.toDateString() + " " + startTime),
+      (new Date(now.toDateString() + " " + endTime).getTime() -
+        new Date(now.toDateString() + " " + startTime).getTime()) /
+        1000
+    )
   }
 
   return (
