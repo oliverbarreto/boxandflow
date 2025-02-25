@@ -1,6 +1,7 @@
 import { ThemeProvider } from "../components/theme-provider"
 
 import "@/app/globals.css"
+import { ToastProvider } from "@/components/ui/toast"
 import { Inter } from "next/font/google"
 
 import type React from "react" // Added import for React
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-background`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
+          <ToastProvider />
         </ThemeProvider>
       </body>
     </html>

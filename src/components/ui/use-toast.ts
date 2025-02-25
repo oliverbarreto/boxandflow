@@ -22,14 +22,14 @@ export const ActionTypes = {
   REMOVE_TOAST: "REMOVE_TOAST"
 } as const
 
-type ActionType = typeof ActionTypes
-
 let count = 0
 
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
+
+type ActionType = typeof ActionTypes
 
 type Action =
   | {
@@ -155,7 +155,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       }
     }
